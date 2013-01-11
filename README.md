@@ -35,5 +35,6 @@ describe(calculator) {
 
 int main(int argc, char const *argv[]) {
    test(calculator);
+   return summary();
 }
 ```

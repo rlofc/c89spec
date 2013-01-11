@@ -41,22 +41,67 @@ describe(calculator) {
 
 int main(int argc, char const *argv[]) {
    test(calculator);
-   return 0;
+   return summary();
 }
 */
+int _c89spec_tests_execs   = 0;
+int _c89spec_tests_passed  = 0;
+int _c89spec_tests_failed  = 0;
 
-#define assert(SCALAR)\
-   (SCALAR)\
-     ? printf("\r\t\033[1;32m[x]\n")\
-     : printf("\r\t\033[1;31m[ ]\n\t\t%s\n",#SCALAR);
+#ifdef C89SPEC_NO_FANCY_STUFF
+static const char * _C89SPEC_NO_COLOR    = "";
+static const char * _C89SPEC_UNDERSCORE  = "";
+static const char * _C89SPEC_RED_COLOR   = "";
+static const char * _C89SPEC_GREEN_COLOR = "";
+static const char * _C89SPEC_BLUE_COLOR  = "";
+#else
+static const char * _C89SPEC_NO_COLOR    = "\033[0m";
+static const char * _C89SPEC_UNDERSCORE  = "\033[4m";
+static const char * _C89SPEC_RED_COLOR   = "\033[1;31m";
+static const char * _C89SPEC_GREEN_COLOR = "\033[1;32m";
+static const char * _C89SPEC_BLUE_COLOR  = "\033[1;34m";
+#endif
+
+#define assert(SCALAR) \
+   (SCALAR) \
+     ? printf("\r\t%s[x]\n",_C89SPEC_GREEN_COLOR) \
+     : printf("\r\t%s[ ]\n\t\t%s\n",_C89SPEC_RED_COLOR \
+                                   ,#SCALAR); \
+   (SCALAR) \
+     ? _c89spec_tests_passed++ \
+     : _c89spec_tests_failed++;
 
 #define describe(MODULE) \
    int MODULE()
 
 #define test(MODULE) \
-   printf("\033[4m\033[1;34m%s\033[0m\n\n",#MODULE);\
-   MODULE();\
-   printf("\033[0m\n\n");
+   printf("%s%s%s%s\n\n",_C89SPEC_UNDERSCORE \
+                        ,_C89SPEC_BLUE_COLOR \
+                        ,#MODULE \
+                        ,_C89SPEC_NO_COLOR); \
+   MODULE(); \
+   printf("%s\n\n",_C89SPEC_NO_COLOR);
 
-#define it(REQUIREMENT)\
-   printf("\033[0m\t    %s",#REQUIREMENT);
+#define it(REQUIREMENT) \
+   _c89spec_tests_execs++; \
+   printf("%s\t[?] %s",_C89SPEC_NO_COLOR \
+                      ,#REQUIREMENT);
+
+
+int summary() {
+   printf ("Total: %s%d%s\n",_C89SPEC_BLUE_COLOR
+                            ,_c89spec_tests_execs
+                            ,_C89SPEC_NO_COLOR);
+
+   printf ("\tPassed: %s%d%s\n",_C89SPEC_GREEN_COLOR
+                               ,_c89spec_tests_passed
+                               ,_C89SPEC_NO_COLOR);
+
+   printf ("\tFailed: %s%d%s\n",_c89spec_tests_failed 
+                                  ? _C89SPEC_RED_COLOR
+                                  : _C89SPEC_GREEN_COLOR
+                               ,_c89spec_tests_failed
+                               ,_C89SPEC_NO_COLOR);
+   printf ("\n");
+   return _c89spec_tests_failed;
+}
