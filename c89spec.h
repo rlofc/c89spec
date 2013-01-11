@@ -20,30 +20,6 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 */
 
-/*
-ncspec - TDD mini-framework
------------------------------------------------------------
-
-usage:
-
-#include <stdio.h>
-#include "ncspec.h"
-#include "calculator.h"
-
-describe(calculator) {
-   it(should_add_two_numbers) {
-      assert( 2 == add(1,1) );
-   }
-   it(should_substract_two_numbers) {
-      assert( 1 == sub(2,1) );
-   }
-}  
-
-int main(int argc, char const *argv[]) {
-   test(calculator);
-   return summary();
-}
-*/
 int _c89spec_tests_execs   = 0;
 int _c89spec_tests_passed  = 0;
 int _c89spec_tests_failed  = 0;
