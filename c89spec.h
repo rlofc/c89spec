@@ -20,9 +20,9 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 */
 
-int _c89spec_tests_execs   = 0;
-int _c89spec_tests_passed  = 0;
-int _c89spec_tests_failed  = 0;
+static int _c89spec_tests_execs   = 0;
+static int _c89spec_tests_passed  = 0;
+static int _c89spec_tests_failed  = 0;
 
 #ifdef C89SPEC_NO_FANCY_STUFF
 static const char * _C89SPEC_NO_COLOR    = "";
@@ -36,11 +36,22 @@ static const char * _C89SPEC_UNDERSCORE  = "\033[4m";
 static const char * _C89SPEC_RED_COLOR   = "\033[1;31m";
 static const char * _C89SPEC_GREEN_COLOR = "\033[1;32m";
 static const char * _C89SPEC_BLUE_COLOR  = "\033[1;34m";
+static const char * _C89SPEC_BLACK_COLOR  = "\033[1;30m";
 #endif
 
+static double _c89spec_profiler_threshold = (1 /*second*/ * 1000 /*milliseconds*/* 1000 /*microseconds*/);
+static clock_t _c89spec_clock_begin;
+static clock_t _c89spec_clock_end;
+
 #define assert(SCALAR) \
+   _c89spec_clock_end = clock(); \
+   if ((double)(_c89spec_clock_end - _c89spec_clock_begin) > _c89spec_profiler_threshold) \
+      printf(_C89SPEC_RED_COLOR); \
+   else \
+      printf(_C89SPEC_BLACK_COLOR); \
+   printf(" (%.2lf seconds)",(double)(_c89spec_clock_end - _c89spec_clock_begin) / CLOCKS_PER_SEC); \
    (SCALAR) \
-     ? printf("\r\t%s[x]\n",_C89SPEC_GREEN_COLOR) \
+     ? printf("\r\t%s[x]\t\n",_C89SPEC_GREEN_COLOR) \
      : printf("\r\t%s[ ]\n\t\t%s\n",_C89SPEC_RED_COLOR \
                                    ,#SCALAR); \
    (SCALAR) \
@@ -48,7 +59,7 @@ static const char * _C89SPEC_BLUE_COLOR  = "\033[1;34m";
      : _c89spec_tests_failed++;
 
 #define describe(MODULE) \
-   int MODULE()
+   static void MODULE()
 
 #define test(MODULE) \
    printf("%s%s%s%s\n\n",_C89SPEC_UNDERSCORE \
@@ -61,10 +72,11 @@ static const char * _C89SPEC_BLUE_COLOR  = "\033[1;34m";
 #define it(REQUIREMENT) \
    _c89spec_tests_execs++; \
    printf("%s\t[?] %s",_C89SPEC_NO_COLOR \
-                      ,#REQUIREMENT);
+                      ,#REQUIREMENT); \
+   _c89spec_clock_begin = clock();
 
 
-int summary() {
+static int summary() {
    printf ("Total: %s%d%s\n",_C89SPEC_BLUE_COLOR
                             ,_c89spec_tests_execs
                             ,_C89SPEC_NO_COLOR);
