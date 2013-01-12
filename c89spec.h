@@ -45,17 +45,22 @@ static const char * _C89SPEC_BLUE_COLOR  = "\033[1;34m";
 static const char * _C89SPEC_BLACK_COLOR  = "\033[1;30m";
 #endif
 
-static double _c89spec_profiler_threshold = (1 /*second*/ * 1000 /*milliseconds*/* 1000 /*microseconds*/);
+static double _c89spec_profiler_threshold = (     1 /*seconds     */
+                                             * 1000 /*milliseconds*/
+                                             * 1000 /*microseconds*/ );
 static clock_t _c89spec_clock_begin;
 static clock_t _c89spec_clock_end;
 
 #define assert(SCALAR) \
    _c89spec_clock_end = clock(); \
-   if ((double)(_c89spec_clock_end - _c89spec_clock_begin) > _c89spec_profiler_threshold) \
+   if ((double)(_c89spec_clock_end - _c89spec_clock_begin) \
+         > _c89spec_profiler_threshold) \
       printf(_C89SPEC_RED_COLOR); \
    else \
       printf(_C89SPEC_BLACK_COLOR); \
-   printf(" (%.2lf seconds)",(double)(_c89spec_clock_end - _c89spec_clock_begin) / CLOCKS_PER_SEC); \
+   printf(" (%.2lf seconds)", \
+            (double)(_c89spec_clock_end - _c89spec_clock_begin) \
+            / CLOCKS_PER_SEC); \
    (SCALAR) \
      ? printf("\r\t%s[x]\t\n",_C89SPEC_GREEN_COLOR) \
      : printf("\r\t%s[ ]\n\t\t%s\n",_C89SPEC_RED_COLOR \
