@@ -26,10 +26,12 @@ DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <time.h>
 
+/* summary metrics                                                            */
 static int _c89spec_tests_execs   = 0;
 static int _c89spec_tests_passed  = 0;
 static int _c89spec_tests_failed  = 0;
 
+/* formatting constants                                                       */
 #ifdef C89SPEC_NO_FANCY_STUFF
 static const char * _C89SPEC_NO_COLOR    = "";
 static const char * _C89SPEC_UNDERSCORE  = "";
@@ -45,22 +47,28 @@ static const char * _C89SPEC_BLUE_COLOR  = "\033[1;34m";
 static const char * _C89SPEC_BLACK_COLOR  = "\033[1;30m";
 #endif
 
-static double _c89spec_profiler_threshold = (     1 /*seconds     */
-                                             * 1000 /*milliseconds*/
-                                             * 1000 /*microseconds*/ );
+/* profiler global vars                                                       */
+static double _c89spec_profiler_threshold = 1.00; /* in seconds               */
 static clock_t _c89spec_clock_begin;
 static clock_t _c89spec_clock_end;
+static double  _c89spec_test_time;
 
+/* "describe" encapsulates a set of "it" clauses in a function                */
+/* MODULE should be a valid C function literal                                */
+#define describe(MODULE) \
+   static void MODULE()
+
+/* "assert" tests the passed scalar, and prints the result and time.          */
+/* You can have several assert tests declared in a single "it" clause but     */
+/* only one assert can be executed during the test.                           */
 #define assert(SCALAR) \
    _c89spec_clock_end = clock(); \
-   if ((double)(_c89spec_clock_end - _c89spec_clock_begin) \
-         > _c89spec_profiler_threshold) \
-      printf(_C89SPEC_RED_COLOR); \
-   else \
-      printf(_C89SPEC_BLACK_COLOR); \
-   printf(" (%.2lf seconds)", \
-            (double)(_c89spec_clock_end - _c89spec_clock_begin) \
-            / CLOCKS_PER_SEC); \
+   _c89spec_test_time = (double)(_c89spec_clock_end - _c89spec_clock_begin) \
+                        / CLOCKS_PER_SEC; \
+   (_c89spec_test_time > _c89spec_profiler_threshold) \
+      ? printf(_C89SPEC_RED_COLOR) \
+      : printf(_C89SPEC_BLACK_COLOR); \
+   printf(" (%.2lf seconds)", _c89spec_test_time);\
    (SCALAR) \
      ? printf("\r\t%s[x]\t\n",_C89SPEC_GREEN_COLOR) \
      : printf("\r\t%s[ ]\n\t\t%s\n",_C89SPEC_RED_COLOR \
@@ -69,9 +77,15 @@ static clock_t _c89spec_clock_end;
      ? _c89spec_tests_passed++ \
      : _c89spec_tests_failed++;
 
-#define describe(MODULE) \
-   static void MODULE()
+/* "it" encapsulates a single test in a curly block.                          */
+/* REQUIREMENT can be anything that's valid as string.                        */
+#define it(REQUIREMENT) \
+   _c89spec_tests_execs++; \
+   printf("%s\t[?] %s",_C89SPEC_NO_COLOR \
+                      ,#REQUIREMENT); \
+   _c89spec_clock_begin = clock();
 
+/* "test" invokes a "describe" clause.                                        */
 #define test(MODULE) \
    printf("%s%s%s%s\n\n",_C89SPEC_UNDERSCORE \
                         ,_C89SPEC_BLUE_COLOR \
@@ -80,13 +94,8 @@ static clock_t _c89spec_clock_end;
    MODULE(); \
    printf("%s\n\n",_C89SPEC_NO_COLOR);
 
-#define it(REQUIREMENT) \
-   _c89spec_tests_execs++; \
-   printf("%s\t[?] %s",_C89SPEC_NO_COLOR \
-                      ,#REQUIREMENT); \
-   _c89spec_clock_begin = clock();
-
-
+/* Use "summary" to optionally print the final tests counters and             */
+/* return the tests final result                                              */
 static int summary() {
    printf ("Total: %s%d%s\n",_C89SPEC_BLUE_COLOR
                             ,_c89spec_tests_execs
