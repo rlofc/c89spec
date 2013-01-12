@@ -20,6 +20,12 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 */
 
+#ifndef C89SPEC_H_SC604JRD
+#define C89SPEC_H_SC604JRD
+
+#include <stdio.h>
+#include <time.h>
+
 static int _c89spec_tests_execs   = 0;
 static int _c89spec_tests_passed  = 0;
 static int _c89spec_tests_failed  = 0;
@@ -93,3 +99,5 @@ static int summary() {
    printf ("\n");
    return _c89spec_tests_failed;
 }
+
+#endif /* end of include guard: C89SPEC_H_SC604JRD */
