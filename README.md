@@ -38,3 +38,9 @@ int main(int argc, char const *argv[]) {
    return summary();
 }
 ```
+
+Configuration
+-------------
+Define C89SPEC_NO_FANCY_STUFF to disable colors and other formatting.
+Redefine C89SPEC_PROFILE_THRESHOLD to change the max allowed time per "it" in seconds.milliseconds (default is 1.00).
+

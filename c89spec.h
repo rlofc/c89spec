@@ -46,7 +46,8 @@ DEALINGS IN THE SOFTWARE.
 /* only one assert can be executed during the test.                           */
 #define assert(SCALAR) \
    _c89spec_end_it(); \
-   (SCALAR) ? _c89spec_assert_passed() : _c89spec_assert_failed(#SCALAR);
+   (SCALAR) ? _c89spec_assert_passed() \
+            : _c89spec_assert_failed(#SCALAR);
 
 /* "it" encapsulates a single test in a curly block.                          */
 /* REQUIREMENT can be anything that's valid as string.                        */
