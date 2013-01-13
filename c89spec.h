@@ -26,32 +26,36 @@ DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <time.h>
 
-/* summary metrics                                                            */
-static int _c89spec_tests_execs   = 0;
-static int _c89spec_tests_passed  = 0;
-static int _c89spec_tests_failed  = 0;
+/* profiler threshold                                                         */
+#ifndef C89SPEC_PROFILE_THRESHOLD
+#define C89SPEC_PROFILE_THRESHOLD 1.00            /* in seconds               */
+#endif
 
 /* formatting constants                                                       */
 #ifdef C89SPEC_NO_FANCY_STUFF
-static const char * _C89SPEC_NO_COLOR    = "";
-static const char * _C89SPEC_UNDERSCORE  = "";
-static const char * _C89SPEC_RED_COLOR   = "";
-static const char * _C89SPEC_GREEN_COLOR = "";
-static const char * _C89SPEC_BLUE_COLOR  = "";
+#define _C89SPEC_NO_COLOR    ""
+#define _C89SPEC_UNDERSCORE  ""
+#define _C89SPEC_RED_COLOR   ""
+#define _C89SPEC_GREEN_COLOR ""
+#define _C89SPEC_BLUE_COLOR  ""
 #else
-static const char * _C89SPEC_NO_COLOR    = "\033[0m";
-static const char * _C89SPEC_UNDERSCORE  = "\033[4m";
-static const char * _C89SPEC_RED_COLOR   = "\033[1;31m";
-static const char * _C89SPEC_GREEN_COLOR = "\033[1;32m";
-static const char * _C89SPEC_BLUE_COLOR  = "\033[1;34m";
-static const char * _C89SPEC_BLACK_COLOR  = "\033[1;30m";
+#define _C89SPEC_NO_COLOR    "\033[0m"
+#define _C89SPEC_UNDERSCORE  "\033[4m"
+#define _C89SPEC_RED_COLOR   "\033[1;31m"
+#define _C89SPEC_GREEN_COLOR "\033[1;32m"
+#define _C89SPEC_BLUE_COLOR  "\033[1;34m"
+#define _C89SPEC_BLACK_COLOR  "\033[1;30m"
 #endif
 
+/* summary metrics                                                            */
+extern int _c89spec_tests_execs;
+extern int _c89spec_tests_passed;
+extern int _c89spec_tests_failed;
+
 /* profiler global vars                                                       */
-static double _c89spec_profiler_threshold = 1.00; /* in seconds               */
-static clock_t _c89spec_clock_begin;
-static clock_t _c89spec_clock_end;
-static double  _c89spec_test_time;
+extern clock_t _c89spec_clock_begin;
+extern clock_t _c89spec_clock_end;
+extern double  _c89spec_test_time;
 
 /* "describe" encapsulates a set of "it" clauses in a function                */
 /* MODULE should be a valid C function literal                                */
@@ -65,7 +69,7 @@ static double  _c89spec_test_time;
    _c89spec_clock_end = clock(); \
    _c89spec_test_time = (double)(_c89spec_clock_end - _c89spec_clock_begin) \
                         / CLOCKS_PER_SEC; \
-   (_c89spec_test_time > _c89spec_profiler_threshold) \
+   (_c89spec_test_time > C89SPEC_PROFILE_THRESHOLD) \
       ? printf(_C89SPEC_RED_COLOR) \
       : printf(_C89SPEC_BLACK_COLOR); \
    printf(" (%.2lf seconds)", _c89spec_test_time);\
@@ -96,22 +100,6 @@ static double  _c89spec_test_time;
 
 /* Use "summary" to optionally print the final tests counters and             */
 /* return the tests final result                                              */
-static int summary() {
-   printf ("Total: %s%d%s\n",_C89SPEC_BLUE_COLOR
-                            ,_c89spec_tests_execs
-                            ,_C89SPEC_NO_COLOR);
-
-   printf ("\tPassed: %s%d%s\n",_C89SPEC_GREEN_COLOR
-                               ,_c89spec_tests_passed
-                               ,_C89SPEC_NO_COLOR);
-
-   printf ("\tFailed: %s%d%s\n",_c89spec_tests_failed 
-                                  ? _C89SPEC_RED_COLOR
-                                  : _C89SPEC_GREEN_COLOR
-                               ,_c89spec_tests_failed
-                               ,_C89SPEC_NO_COLOR);
-   printf ("\n");
-   return _c89spec_tests_failed;
-}
+int summary();
 
 #endif /* end of include guard: C89SPEC_H_SC604JRD */
