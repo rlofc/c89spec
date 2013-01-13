@@ -23,39 +23,18 @@ DEALINGS IN THE SOFTWARE.
 #ifndef C89SPEC_H_SC604JRD
 #define C89SPEC_H_SC604JRD
 
-#include <stdio.h>
-#include <time.h>
-
 /* profiler threshold                                                         */
 #ifndef C89SPEC_PROFILE_THRESHOLD
-#define C89SPEC_PROFILE_THRESHOLD 1.00            /* in seconds               */
+#define C89SPEC_PROFILE_THRESHOLD 1.00                          /* in seconds */
 #endif
 
-/* formatting constants                                                       */
-#ifdef C89SPEC_NO_FANCY_STUFF
-#define _C89SPEC_NO_COLOR    ""
-#define _C89SPEC_UNDERSCORE  ""
-#define _C89SPEC_RED_COLOR   ""
-#define _C89SPEC_GREEN_COLOR ""
-#define _C89SPEC_BLUE_COLOR  ""
-#else
-#define _C89SPEC_NO_COLOR    "\033[0m"
-#define _C89SPEC_UNDERSCORE  "\033[4m"
-#define _C89SPEC_RED_COLOR   "\033[1;31m"
-#define _C89SPEC_GREEN_COLOR "\033[1;32m"
-#define _C89SPEC_BLUE_COLOR  "\033[1;34m"
-#define _C89SPEC_BLACK_COLOR  "\033[1;30m"
-#endif
-
-/* summary metrics                                                            */
-extern int _c89spec_tests_execs;
-extern int _c89spec_tests_passed;
-extern int _c89spec_tests_failed;
-
-/* profiler global vars                                                       */
-extern clock_t _c89spec_clock_begin;
-extern clock_t _c89spec_clock_end;
-extern double  _c89spec_test_time;
+/* MACRO and function definitions of c89spec:                                 */
+/* -----------------------------                                              */
+/* describe({module_name})                                                    */
+/* it({module responsibility})                                                */
+/* assert({scalar})                                                           */
+/* test({module_name})                                                        */
+/* summary()                                                                  */
 
 /* "describe" encapsulates a set of "it" clauses in a function                */
 /* MODULE should be a valid C function literal                                */
@@ -66,40 +45,27 @@ extern double  _c89spec_test_time;
 /* You can have several assert tests declared in a single "it" clause but     */
 /* only one assert can be executed during the test.                           */
 #define assert(SCALAR) \
-   _c89spec_clock_end = clock(); \
-   _c89spec_test_time = (double)(_c89spec_clock_end - _c89spec_clock_begin) \
-                        / CLOCKS_PER_SEC; \
-   (_c89spec_test_time > C89SPEC_PROFILE_THRESHOLD) \
-      ? printf(_C89SPEC_RED_COLOR) \
-      : printf(_C89SPEC_BLACK_COLOR); \
-   printf(" (%.2lf seconds)", _c89spec_test_time);\
-   (SCALAR) \
-     ? printf("\r\t%s[x]\t\n",_C89SPEC_GREEN_COLOR) \
-     : printf("\r\t%s[ ]\n\t\t%s\n",_C89SPEC_RED_COLOR \
-                                   ,#SCALAR); \
-   (SCALAR) \
-     ? _c89spec_tests_passed++ \
-     : _c89spec_tests_failed++;
+   _c89spec_end_it(); \
+   (SCALAR) ? _c89spec_assert_passed() : _c89spec_assert_failed(#SCALAR);
 
 /* "it" encapsulates a single test in a curly block.                          */
 /* REQUIREMENT can be anything that's valid as string.                        */
 #define it(REQUIREMENT) \
-   _c89spec_tests_execs++; \
-   printf("%s\t[?] %s",_C89SPEC_NO_COLOR \
-                      ,#REQUIREMENT); \
-   _c89spec_clock_begin = clock();
+   _c89spec_begin_it(#REQUIREMENT);
 
 /* "test" invokes a "describe" clause.                                        */
 #define test(MODULE) \
-   printf("%s%s%s%s\n\n",_C89SPEC_UNDERSCORE \
-                        ,_C89SPEC_BLUE_COLOR \
-                        ,#MODULE \
-                        ,_C89SPEC_NO_COLOR); \
-   MODULE(); \
-   printf("%s\n\n",_C89SPEC_NO_COLOR);
+   _c89spec_test_module(#MODULE,MODULE);
 
 /* Use "summary" to optionally print the final tests counters and             */
 /* return the tests final result                                              */
 int summary();
+
+/* private functions                                                          */
+void _c89spec_test_module(const char * module,void (*func)());
+void _c89spec_begin_it(const char * requirement);
+void _c89spec_end_it();
+void _c89spec_assert_passed();
+void _c89spec_assert_failed(const char * scalar);
 
 #endif /* end of include guard: C89SPEC_H_SC604JRD */
