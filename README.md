@@ -13,6 +13,8 @@ a simple, ANSI-C compliant version.
 Usage
 -----
 
+Write your spec:
+
 ```C
 #include <stdio.h>
 #include "c89spec.h"
@@ -26,7 +28,7 @@ describe(calculator) {
       assert( 1 == sub(2,1) );
    }
    it (should multiply two numbers) {
-      assert( 4 == mul(2,2) );
+      assert( 5 == mul(2,2) ); // on purpose
    }
    it (should divide two numbers) {
       assert( 2 == div(4,2) );
@@ -38,6 +40,10 @@ int main(int argc, char const *argv[]) {
    return summary();
 }
 ```
+
+Work your way to the green:
+
+![c89spec result](https://raw.github.com/L3V3L9/c89spec/docs/img/c89spec.jpg)
 
 Configuration
 -------------
