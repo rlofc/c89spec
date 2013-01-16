@@ -1,14 +1,13 @@
 c89spec
 =======
-TDD mini-framework for ANSI-C
+The minimalist TDD/BDD mini-framework for ANSI-C
 
 Motivation
 ----------
-After using mocha for Javascript, I looked for a simple
-and aesthetic TDD framework for my C code. I wanted my specs
-to look clean and readable, so I wrote ncspec, but it relied 
-on nested functions, so I revised it and wrote
-a simple, ANSI-C compliant version.
+After using rspec in Ruby and mocha for Javascript, I looked for 
+similar, simple and aesthetic TDD/BDD framework for my C code. 
+I wanted my specs to look clean and readable, without any ugly
+bits of code.
 
 Usage
 -----
@@ -47,6 +46,6 @@ Work your way to the green:
 
 Configuration
 -------------
-Define C89SPEC_NO_FANCY_STUFF to disable colors and other formatting.
-Redefine C89SPEC_PROFILE_THRESHOLD to change the max allowed time per "it" in seconds.milliseconds (default is 1.00).
+- Define *C89SPEC_NO_FANCY_STUFF* to disable colors and other formatting.
+- Redefine *C89SPEC_PROFILE_THRESHOLD* to change the max allowed time per "it" in seconds.milliseconds (default is 1.00).
 
