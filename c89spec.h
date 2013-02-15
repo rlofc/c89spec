@@ -39,7 +39,7 @@ DEALINGS IN THE SOFTWARE.
 /* "describe" encapsulates a set of "it" clauses in a function                */
 /* MODULE should be a valid C function literal                                */
 #define describe(MODULE) \
-   static void MODULE()
+   void MODULE()
 
 /* "assert" tests the passed scalar, and prints the result and time.          */
 /* You can have several assert tests declared in a single "it" clause but     */
