@@ -51,7 +51,7 @@ static const char * _C89SPEC_BLACK_COLOR  = "\033[1;30m";
 #endif
 
 void _c89spec_test_module(const char * module,void (*func)()) {
-   printf("%s%s%s%s\n\n",_C89SPEC_UNDERSCORE \
+   printf("\n%s%s%s%s\n",_C89SPEC_UNDERSCORE \
                         ,_C89SPEC_BLUE_COLOR \
                         ,module \
                         ,_C89SPEC_NO_COLOR); \
@@ -61,7 +61,7 @@ void _c89spec_test_module(const char * module,void (*func)()) {
 
 void _c89spec_begin_it(const char * requirement) {
    _c89spec_tests_execs++;
-   printf("%s\t[?] %s",_C89SPEC_NO_COLOR,requirement); \
+   printf("\n%s\t[?] %s",_C89SPEC_NO_COLOR,requirement); \
    _c89spec_clock_begin = clock();
 }
 
@@ -72,16 +72,16 @@ void _c89spec_end_it() {
    (_c89spec_test_time > C89SPEC_PROFILE_THRESHOLD)
       ? printf(_C89SPEC_RED_COLOR)
       : printf(_C89SPEC_BLACK_COLOR);
-   printf(" (%.2lf seconds)", _c89spec_test_time);
+   printf(" (%.2f seconds)", _c89spec_test_time);
 }
 
 void _c89spec_assert_passed() {
-   printf("\r\t%s[x]\t\n",_C89SPEC_GREEN_COLOR);
+   printf("\r\t%s[x]\t",_C89SPEC_GREEN_COLOR);
    _c89spec_tests_passed++;
 }
 
 void _c89spec_assert_failed(const char * scalar) {
-   printf("\r\t%s[ ]\n\t\t%s\n",_C89SPEC_RED_COLOR,scalar);
+   printf("\r\t%s[ ]\n\t\t%s",_C89SPEC_RED_COLOR,scalar);
    _c89spec_tests_failed++;
 }
 
