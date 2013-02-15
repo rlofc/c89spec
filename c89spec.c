@@ -70,8 +70,8 @@ void _c89spec_end_it() {
    _c89spec_test_time = (double)(_c89spec_clock_end - _c89spec_clock_begin)
                         / CLOCKS_PER_SEC;
    (_c89spec_test_time > C89SPEC_PROFILE_THRESHOLD)
-      ? printf(_C89SPEC_RED_COLOR)
-      : printf(_C89SPEC_BLACK_COLOR);
+      ? printf("%s",_C89SPEC_RED_COLOR)
+      : printf("%s",_C89SPEC_BLACK_COLOR);
    printf(" (%.2f seconds)", _c89spec_test_time);
 }
 
