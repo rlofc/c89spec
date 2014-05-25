@@ -39,7 +39,7 @@ DEALINGS IN THE SOFTWARE.
 /* "describe" encapsulates a set of "it" clauses in a function                */
 /* MODULE should be a valid C function literal                                */
 #define describe(MODULE) \
-   void MODULE()
+   void MODULE(void)
 
 /* "assert" tests the passed scalar, and prints the result and time.          */
 /* You can have several assert tests declared in a single "it" clause but     */
@@ -60,13 +60,13 @@ DEALINGS IN THE SOFTWARE.
 
 /* Use "summary" to optionally print the final tests counters and             */
 /* return the tests final result                                              */
-int summary();
+int summary(void);
 
 /* private functions                                                          */
-void _c89spec_test_module(const char * module,void (*func)());
+void _c89spec_test_module(const char * module,void (*func)(void));
 void _c89spec_begin_it(const char * requirement);
-void _c89spec_end_it();
-void _c89spec_assert_passed();
+void _c89spec_end_it(void);
+void _c89spec_assert_passed(void);
 void _c89spec_assert_failed(const char * scalar);
 
 #endif /* end of include guard: C89SPEC_H_SC604JRD */

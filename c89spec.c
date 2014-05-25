@@ -50,7 +50,7 @@ static const char * _C89SPEC_BLUE_COLOR  = "\033[1;34m";
 static const char * _C89SPEC_BLACK_COLOR  = "\033[1;30m";
 #endif
 
-void _c89spec_test_module(const char * module,void (*func)()) {
+void _c89spec_test_module(const char * module,void (*func)(void)) {
    printf("\n%s%s%s%s\n",_C89SPEC_UNDERSCORE \
                         ,_C89SPEC_BLUE_COLOR \
                         ,module \
@@ -65,7 +65,7 @@ void _c89spec_begin_it(const char * requirement) {
    _c89spec_clock_begin = clock();
 }
 
-void _c89spec_end_it() {
+void _c89spec_end_it(void) {
    _c89spec_clock_end = clock();
    _c89spec_test_time = (double)(_c89spec_clock_end - _c89spec_clock_begin)
                         / CLOCKS_PER_SEC;
@@ -75,7 +75,7 @@ void _c89spec_end_it() {
    printf(" (%.2f seconds)", _c89spec_test_time);
 }
 
-void _c89spec_assert_passed() {
+void _c89spec_assert_passed(void) {
    printf("\r\t%s[x]\t",_C89SPEC_GREEN_COLOR);
    _c89spec_tests_passed++;
 }
@@ -85,7 +85,7 @@ void _c89spec_assert_failed(const char * scalar) {
    _c89spec_tests_failed++;
 }
 
-int summary() {
+int summary(void) {
    printf ("Total: %s%d%s\n",_C89SPEC_BLUE_COLOR
                             ,_c89spec_tests_execs
                             ,_C89SPEC_NO_COLOR);
